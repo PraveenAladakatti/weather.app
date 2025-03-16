@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #00796b; /* Light cyan background */
+            padding: 50px;
+        }
+        .container {
+            max-width: 300px;
+            margin: 0 auto;
+            background: #ffffff; /* White background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.356);
+            margin-top: 10%;
+        }
+        input {
+            padding: 10px;
+            width: 80%;
+            margin: 5px 0;
+            border: 1px solid #00796b; /* Teal border */
+            border-radius: 5px;
+            
+        }
+        button {
+            padding: 10px;
+            background: #00796b; /* Teal background */
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.356);
+            margin: 5px 0;
+            border-radius: 5px;
+            width: 85%;
+        }
+        button:hover {
+            background: #004d40; /* Darker teal on hover */
+            
+        }
+        .toggle-container {
+            margin-top: 10px;
+        }
+        .toggle-container a {
+            color: #00796b;
+            cursor: pointer;
+        }
+        .form-container {
+            display: none;
+        }
+        .form-container.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="color:  #12bda0;">Login</h2>
+        <form id="loginForm" class="form-container active">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <form id="registerForm" class="form-container">
+            <input type="text" id="newUsername" placeholder="Username" required>
+            <input type="password" id="newPassword" placeholder="Password" required>
+            <button type="submit">Register</button>
+        </form>
+        <form id="forgotPasswordForm" class="form-container">
+            <input type="text" id="forgotUsername" placeholder="Username" required>
+            <input type="password" id="newPassword" placeholder="New Password" required>
+            <button type="submit">Change Password</button>
+        </form>
+        <div class="toggle-container">
+            <a id="toggleRegister">Don't have an account? Register</a>
+            <br>
+            <a id="toggleForgotPassword">Forgot Password?</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            const storedUsername = localStorage.getItem('username');
+            const storedPassword = localStorage.getItem('password');
+            
+            if (username === storedUsername && password === storedPassword) {
+                // Save login status to localStorage
+                localStorage.setItem('loggedIn', 'true');
+                // Redirect to the weather app page after successful login
+                window.location.href = 'indext.html';
+            } else {
+                alert('Invalid username or password');
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const newUsername = document.getElementById('newUsername').value.trim();
+            const newPassword = document.getElementById('newPassword').value.trim();
+            
+            if (newUsername && newPassword) {
+                // Save new user credentials to localStorage
+                localStorage.setItem('username', newUsername);
+                localStorage.setItem('password', newPassword);
+                alert('Registration successful');
+                // Switch to login form after successful registration
+                toggleForm('loginForm');
+            } else {
+                alert('Please enter both username and password');
+            }
+        });
+
+        document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const forgotUsername = document.getElementById('forgotUsername').value.trim();
+            const newPassword = document.getElementById('newPassword').value.trim();
+            
+            const storedUsername = localStorage.getItem('username');
+            
+            if (forgotUsername === storedUsername && newPassword) {
+                // Update password in localStorage
+                localStorage.setItem('password', newPassword);
+                alert('Password changed successfully');
+                // Switch to login form after successful password change
+                toggleForm('loginForm');
+            } else {
+                alert('Invalid username or password');
+            }
+        });
+
+        document.getElementById('toggleRegister').addEventListener('click', function() {
+            toggleForm('registerForm');
+        });
+
+        document.getElementById('toggleForgotPassword').addEventListener('click', function() {
+            toggleForm('forgotPasswordForm');
+        });
+
+        function toggleForm(formId) {
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('registerForm').classList.remove('active');
+            document.getElementById('forgotPasswordForm').classList.remove('active');
+            document.getElementById(formId).classList.add('active');
+        }
+
+        // Check if already logged in
+        if (localStorage.getItem('loggedIn') === 'true') {
+            window.location.href = 'indext.html';
+        }
+    </script>
+</body>
+</html>

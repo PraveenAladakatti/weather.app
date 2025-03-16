@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #00796b;
+            padding: 50px;
+        }
+        .container {
+            max-width: 300px;
+            margin: 0 auto;
+            background: white;
+            padding: 5px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.356);
+            margin-top:10%;
+            background: #ffffff;
+            color: #00796b;
+        }
+        input {
+            padding: 10px;
+            width: 80%;
+            margin: 5px 0;
+            border: 1px solid #00796b; /* Teal border */
+            border-radius: 5px;
+            color:  #00796b;
+        }
+        button {
+            padding: 10px;
+            background: #00796b; /* Teal background */
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.356);
+            margin: 5px 0;
+            border-radius: 5px;
+            width: 85%;
+        }
+        .weather-info {
+            margin-top: 20px;
+            color:  #00796b;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Redirect to login page if not logged in
+        if (localStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <div class="container">
+        <h2>Weather App</h2>
+        <input type="text" id="location" placeholder="Enter location">
+        <button onclick="getWeather()">Get Weather</button>
+        <div class="weather-info" id="weatherInfo"></div>
+        <a href="login.html" onclick="logout()"  style="color: #0e5f3c;">Logout</a> <!-- Link to the login page -->
+    </div>
+
+    <script>
+        function getWeather() {
+            const location = document.getElementById('location').value.trim();
+            if (!location) {
+                alert('Please enter a location');
+                return;
+            }
+    
+            const encodedLocation = encodeURIComponent(location); // Ensure proper format
+            
+            fetch(`http://api.weatherapi.com/v1/current.json?key=3e105c0f45bb417396461521250403&q=${encodedLocation}&aqi=yes`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert("Location not found! Try another city.");
+                        return;
+                    }
+                    document.getElementById('weatherInfo').innerHTML = `
+                        <h3>${data.location.name}, ${data.location.country}</h3>
+                        <p>Temperature: ${data.current.temp_c}°C</p>
+                        <p>Condition: ${data.current.condition.text}</p>
+                        <img src="${data.current.condition.icon}" alt="weather icon">
+                    `;
+                })
+                .catch(error => {
+                    alert('Error fetching weather data');
+                    console.error(error);
+                });
+        }
+
+        function logout() {
+            // Clear login status from localStorage
+            localStorage.removeItem('loggedIn');
+        }
+    </script>
+</body>
+</html>
